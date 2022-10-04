@@ -1,64 +1,75 @@
 <template>
   <div class='v-product-page'>
-    <img v-if="product.image" class="v-catalog-item__image" :src=" require('../../assets/images/' + product.image)"
-         alt="img">
-    <p>Product name: {{product.name}}</p>
-    <p>Article: {{product.article}}</p>
-    <p>Company: {{product.company}}</p>
-    <p>Store: {{product.store}}</p>
-    <p>Delivery Date: {{product.deliveryDate}}</p>
-    <p>Create dDate: {{product.createdDate}}</p>
-    <button
-        class="v-catalog-item__add_to_cart_btn btn"
-        @click="addToCart"
-    >Add to cart
-    </button>
+    <label class="input-field" for="product-name">
+      <span>Product Name:</span>
+      <input id="product-name" v-model="name" />
+    </label>
+    <p><b>Company:</b> {{product.company}}</p>
+    <p><b>Store:</b> {{product.store}}</p>
+    <p><b>Delivery Date:</b> {{product.deliveryDate}}</p>
+    <p><b>Created Date:</b> {{product.createdDate}}</p>
+    <div class="v-product-page_actions">
+      <router-link class="v-product-page_cancel btn btn_default" :to="{name: 'products'}">
+        Cancel
+      </router-link>
+      <button
+          class="btn"
+          @click="onUpdateProduct"
+      >
+        Update product
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
-  import {mapGetters, mapActions} from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
 
   export default {
     name: "v-product-page",
-    props: {},
-    data() {
-      return {}
-    },
-    // filters: {
-    // },
     computed: {
       ...mapGetters([
-        'PRODUCTS'
+        'PRODUCT'
       ]),
       product() {
-        let result = {}
-        let vm = this;
-        this.PRODUCTS.find(function (item) {
-          if (item.article === vm.$route.query.product) {
-            result = item;
-          }
-        })
-        return result;
-      }
+        return this.PRODUCT;
+      },
+      name: {
+        get () {
+          return this.$store.state.product.name
+        },
+        set (value) {
+          this.$store.commit('SET_PRODUCT_FIELD_TO_STATE', { key: 'name', value });
+        }
+      },
     },
     methods: {
       ...mapActions([
-        'GET_PRODUCTS_FROM_API',
-        'ADD_TO_CART'
+        'UPDATE_PRODUCT_TO_API'
       ]),
-      addToCart() {
-        this.ADD_TO_CART(this.product)
+      async onUpdateProduct() {
+        await this.UPDATE_PRODUCT_TO_API();
+        this.$router.push('/products');
       },
-    },
-    mounted() {
-      if (!this.PRODUCTS.length) {
-        this.GET_PRODUCTS_FROM_API()
-      }
     }
   }
 </script>
 
-<style scoped>
-
+<style lang="scss">
+  .v-product-page {
+    text-align: left;
+    width: 50%;
+    &_cancel {
+      text-decoration: none;
+      margin-bottom: 20px;
+    }
+    &_actions {
+      display: flex;
+      align-items: start;
+      justify-content: right;
+      & > :first-child {
+        margin-right: 20px;
+      }
+    }
+  }
 </style>

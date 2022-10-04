@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import vCatalog from '../components/catalog/v-catalog'
-import vProducts from '../components/catalog/v-products'
+import vProductStatistics from '../components/catalog/v-product-statistics'
 import vMainPage from '../components/main-page/v-main-page'
 import vProductPage from '../components/catalog/v-product-page'
 import vProductPageNew from '../components/catalog/v-product-page-new'
@@ -34,8 +34,7 @@ let router = new Router({
     {
       path: '/statistics',
       name: 'statistics',
-      component: vProducts,
-      props: true
+      component: vProductStatistics,
     },
   ]
 })

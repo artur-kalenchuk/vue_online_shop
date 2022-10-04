@@ -41,5 +41,18 @@ export default {
       return e;
     }
 
+  },
+  async UPDATE_PRODUCT_TO_API({ state, commit }) {
+    try {
+      const updatedProduct = await axios.put('http://localhost:3000/products', {
+        ...state.product
+      });
+      commit('SET_PRODUCT_TO_STATE', updatedProduct.data);
+      return updatedProduct.data;
+    } catch (e) {
+      console.log(e)
+      return e;
+    }
+
   }
 }

@@ -1,27 +1,33 @@
 <template>
   <div class='v-product-page'>
     <label class="input-field" for="product-name">
-      Product Name
+      Product Name:
       <input id="product-name" v-model="name" />
     </label>
     <label class="input-field" for="product-company">
-      Company
+      Company:
       <input id="product-company" v-model="company" />
     </label>
     <label class="input-field" for="product-store">
-      Store
+      Store:
       <input id="product-store" v-model="store" />
     </label>
     <label class="input-field" for="product-deliveryDate">
-      Delivery Date
+      Delivery Date:
       <input id="product-deliveryDate" v-model="deliveryDate" type="date"/>
     </label>
-    <button
-        class="v-catalog-item__add_to_cart_btn btn"
-        @click="onSaveProduct"
-    >
-      Save product
-    </button>
+    <div class="v-product-page_actions">
+      <router-link class="v-product-page_cancel btn btn_default" :to="{name: 'products'}">
+        Cancel
+      </router-link>
+      <button
+          class="v-catalog-item__add_to_cart_btn btn"
+          @click="onSaveProduct"
+      >
+        Save product
+      </button>
+    </div>
+
   </div>
 </template>
 
@@ -88,10 +94,21 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss">
   .v-product-page {
     width: 50%;
     display: block;
-    margin: 0 auto;
+    &_cancel {
+      text-decoration: none;
+      margin-bottom: 20px;
+    }
+    &_actions {
+      display: flex;
+      align-items: start;
+      justify-content: right;
+      & > :first-child {
+        margin-right: 20px;
+      }
+    }
   }
 </style>
