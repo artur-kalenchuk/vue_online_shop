@@ -9,9 +9,12 @@
     </button>
     <div class="v-catalog__list">
       <vuetable ref="vuetable"
-        :fields="['id', 'name', 'company', 'store', 'deliveryDate', 'createdDate', 'actions']"
+        :fields="fields"
         :api-mode="false"
-        :data="filteredProducts"
+        :per-page="perPage"
+        :data-manager="dataManager"
+        pagination-path="pagination"
+        @vuetable:pagination-data="onPaginationData"
       >
         <div slot="actions" slot-scope="props">
           <button
@@ -22,6 +25,11 @@
           </button>
         </div>
       </vuetable>
+      <div style="padding-top:10px">
+        <vuetable-pagination ref="pagination"
+          @vuetable-pagination:change-page="onChangePage"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -29,11 +37,19 @@
 <script>
   import {mapActions, mapGetters} from 'vuex'
   import Vuetable from 'vuetable-2'
+  import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 
   export default {
     name: "v-catalog",
     components: {
-      Vuetable
+      Vuetable,
+      VuetablePagination
+    },
+    data() {
+      return {
+        fields: ['id', 'name', 'company', 'store', 'deliveryDate', 'createdDate', 'actions'],
+        perPage: 3,
+      };
     },
     computed: {
       ...mapGetters([
@@ -45,6 +61,11 @@
       filteredProducts() {
           return this.PRODUCTS;
       },
+    },
+    watch: {
+      filteredProducts() {
+        this.$refs.vuetable.refresh();
+      }
     },
     methods: {
       ...mapActions([
@@ -61,7 +82,31 @@
       onCreateNewProduct() {
         this.SET_PRODUCT_TO_STATE({});
         this.$router.push('product/new');
-      }
+      },
+      onPaginationData(paginationData) {
+        this.$refs.pagination.setPaginationData(paginationData);
+      },
+      onChangePage(page) {
+        this.$refs.vuetable.changePage(page);
+      },
+      dataManager(sortOrder, pagination) {
+        if (this.filteredProducts.length < 1) return;
+
+        let local = this.filteredProducts;
+
+        pagination = this.$refs.vuetable.makePagination(
+            local.length,
+            this.perPage
+        );
+
+        let from = pagination.from - 1;
+        let to = from + this.perPage;
+
+        return {
+          pagination: pagination,
+          data: local.slice(from, to)
+        };
+      },
     },
     activated() {
       this.GET_PRODUCTS_FROM_API();
