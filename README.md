@@ -1,5 +1,13 @@
 # tutorial_online_shop
 
+To start this app in the docker need to run:
+```
+docker build -f Dockerfile .
+```
+Copy name of the Docker image and run:
+```
+docker run --rm -p 8080:8080 -e "HOST=0.0.0.0" -it [name of the docker image]
+```
 ## Project setup
 ```
 npm install
